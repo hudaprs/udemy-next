@@ -1,0 +1,26 @@
+{
+	"name": "next-js-the-complete-developers-guide",
+	"version": "1.0.0",
+	"main": "index.js",
+	"repository": "https://github.com/hudaprs/udemy-next.git",
+	"author": "Huda Prasetyo <real.hudaprasetyo@gmail.com>",
+	"license": "MIT",
+	"devDependencies": {
+		"@commitlint/cli": "^18.4.2",
+		"@commitlint/config-conventional": "^18.4.2",
+		"husky": "^8.0.0",
+		"lint-staged": "^15.1.0",
+		"prettier": "^3.1.0"
+	},
+	"scripts": {
+		"prepare": "husky install",
+		"lint": "eslint './**/*.{js,jsx,ts,tsx,json}'",
+		"lint:fix": "eslint --fix './**/*.{js,jsx,ts,tsx,json}'",
+		"lint:format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
+	},
+	"lint-staged": {
+		"**/*.{js,jsx,ts,tsx,html,css,json}": [
+			"yarn prettier --write"
+		]
+	}
+}
