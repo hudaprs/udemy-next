@@ -5,6 +5,9 @@ import { db } from '@/db'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 
+// Actions
+import * as actions from '@/actions'
+
 type TSnippetDetailProps = {
 	params: {
 		id: string
@@ -20,6 +23,10 @@ export default async function SnippetDetailPage(props: TSnippetDetailProps) {
 
 	if (!snippetDetail) return notFound()
 
+	const snippetDeleteAction = actions.snippetDelete.bind(null, {
+		id: props.params.id
+	})
+
 	return (
 		<div className='py-4'>
 			<div className='flex flex-row items-center justify-between mb-4'>
@@ -31,7 +38,9 @@ export default async function SnippetDetailPage(props: TSnippetDetailProps) {
 					>
 						Edit
 					</Link>
-					<button className='p-2 border rounded'>Delete</button>
+					<form action={snippetDeleteAction}>
+						<button className='p-2 border rounded'>Delete</button>
+					</form>
 				</div>
 			</div>
 
