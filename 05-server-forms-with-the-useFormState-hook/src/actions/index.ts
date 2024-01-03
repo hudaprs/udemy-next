@@ -7,8 +7,7 @@ import { db } from '@/db'
 import { redirect } from 'next/navigation'
 
 type TSnippetCreateAttrs = {
-	title: string
-	code: string
+	formState: { message: string }
 }
 
 type TSnippetUpdateAttrs = {
@@ -23,22 +22,50 @@ type TSnippetDeleteAttrs = {
 /**
  * @description Create snippet
  *
- * @param {TSnippetCreateAttrs} snippet
+ * @param {string} formState.message
+ * @param {FormData} formData
  *
  * @return {Promise<void>} Promise<void>
  */
-export const snippetCreate = async ({
-	title,
-	code
-}: TSnippetCreateAttrs): Promise<void> => {
-	await db.snippet.create({
-		data: {
-			title,
-			code
-		}
-	})
+export const snippetCreate = async (
+	formState: TSnippetCreateAttrs['formState'],
+	formData: FormData
+) => {
+	try {
+		const title = formData.get('title') as string
+		const code = formData.get('code') as string
 
-	redirect(`/snippets`)
+		if (typeof title !== 'string' || title.length < 3) {
+			return {
+				message: 'Title should be more than 3 chars'
+			}
+		}
+
+		if (typeof code !== 'string' || code.length < 10) {
+			return {
+				message: 'Code should be more than 10 chars'
+			}
+		}
+
+		await db.snippet.create({
+			data: {
+				title,
+				code
+			}
+		})
+	} catch (err) {
+		if (err instanceof Error) {
+			return {
+				message: err.message
+			}
+		} else {
+			return {
+				message: 'Something went wrong'
+			}
+		}
+	}
+
+	redirect('/snippets')
 }
 
 /**

@@ -1,33 +1,18 @@
-// DB
-import { db } from '@/db'
+'use client'
 
 // Next
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
+// React
+import { useFormState } from 'react-dom'
+
+// Actions
+import * as actions from '@/actions'
+
 export default function SnippetCreatePage() {
-	/**
-	 * @description Create snippet
-	 *
-	 * @param {FormData} formData
-	 *
-	 * @return {Promise<void>} Promise<void>
-	 */
-	const createSnippet = async (formData: FormData): Promise<void> => {
-		'use server'
-
-		const title = formData.get('title') as string
-		const code = formData.get('code') as string
-
-		await db.snippet.create({
-			data: {
-				title,
-				code
-			}
-		})
-
-		redirect('/snippets')
-	}
+	const [formState, action] = useFormState(actions.snippetCreate, {
+		message: ''
+	})
 
 	return (
 		<div className='my-4'>
@@ -37,7 +22,7 @@ export default function SnippetCreatePage() {
 					Back
 				</Link>
 			</div>
-			<form className='flex flex-col gap-5' action={createSnippet}>
+			<form className='flex flex-col gap-5' action={action}>
 				{/* Title */}
 				<div className='flex gap-5 items-center'>
 					<label htmlFor='title'>Title</label>
@@ -61,6 +46,13 @@ export default function SnippetCreatePage() {
 					/>
 				</div>
 				{/* End Code */}
+
+				{/* Error Message */}
+				{formState.message !== '' ? (
+					<div className='my-2 p-2 bg-red-200 border rounded border-red-400'>
+						{formState.message}
+					</div>
+				) : null}
 
 				<button className='block bg-blue-300 p-2 text-white font-bold'>
 					Create
